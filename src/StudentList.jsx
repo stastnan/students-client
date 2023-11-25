@@ -57,7 +57,9 @@ export const StudentList = () => {
           </tbody>
         </table>
       ) : null}
-      <Link to="/students/create">Create new student</Link>
+      <nav>
+        <Link to="/students/create">Create new student</Link>
+      </nav>
     </>
   );
 };
