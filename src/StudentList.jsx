@@ -1,20 +1,33 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import {
+  CODEBOOK_NAME_GENDER,
+  CODEBOOK_NAME_HOUSE,
+  CODEBOOK_NAME_YEAR,
+  getCodebookItemName,
+} from "./codebook";
 
 export const StudentList = () => {
   const [students, setStudents] = useState([]);
 
-  useEffect(() => {
-    fetch("http://localhost:8080/students")
+  const fetchStudents = () => {
+    return fetch("http://localhost:8080/students")
       .then((response) => response.json())
-      .then((body) => {
-        setStudents(body);
-      });
+      .then((students) => setStudents(students));
+  };
+
+  const deleteStudent = (id) => {
+    return fetch(`http://localhost:8080/students/${id}`, { method: "DELETE" });
+  };
+
+  useEffect(() => {
+    fetchStudents();
   }, []);
 
-  const handleStudentDelete = (id) => {
-    const filteredStudents = students.filter((student) => student.id !== id);
-    setStudents(filteredStudents);
+  const handleDeleteButton = (id) => {
+    deleteStudent(id).then(() => {
+      fetchStudents();
+    });
   };
 
   return (
@@ -39,15 +52,19 @@ export const StudentList = () => {
                     {student.firstName} {student.lastName}
                   </Link>
                 </td>
-                <td>{student.gender}</td>
-                <td>{student.house}</td>
-                <td>{student.year}</td>
                 <td>
-                  <Link to={`/students/${student.id}/edit`}> Edit</Link>
+                  {getCodebookItemName(CODEBOOK_NAME_GENDER, student.gender)}
+                </td>
+                <td>
+                  {getCodebookItemName(CODEBOOK_NAME_HOUSE, student.house)}
+                </td>
+                <td>{getCodebookItemName(CODEBOOK_NAME_YEAR, student.year)}</td>
+                <td>
+                  <Link to={`/students/${student.id}/edit`}>Edit</Link>{" "}
                   <button
                     type="button"
+                    onClick={() => handleDeleteButton(student.id)}
                     className="btn btn-danger student-delete"
-                    onClick={() => handleStudentDelete(student.id)}
                   >
                     Delete
                   </button>

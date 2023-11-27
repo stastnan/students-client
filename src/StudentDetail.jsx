@@ -1,17 +1,25 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import {
+  CODEBOOK_NAME_GENDER,
+  CODEBOOK_NAME_HOUSE,
+  CODEBOOK_NAME_YEAR,
+  getCodebookItemName,
+} from "./codebook";
 
 export const StudentDetail = () => {
-  const [student, setStudent] = useState(null);
   const { id } = useParams();
+  const [student, setStudent] = useState(null);
+
+  const fetchStudent = () => {
+    return fetch(`http://localhost:8080/students/${id}`)
+      .then((response) => response.json())
+      .then((body) => setStudent(body));
+  };
 
   useEffect(() => {
-    fetch(`http://localhost:8080/students/${id}`)
-      .then((response) => response.json())
-      .then((body) => {
-        setStudent(body);
-      });
-  }, [id]);
+    fetchStudent();
+  }, []);
 
   return (
     <>
@@ -27,29 +35,29 @@ export const StudentDetail = () => {
             </tr>
             <tr>
               <th>Gender</th>
-              <td>{student.gender}</td>
+              <td>
+                {getCodebookItemName(CODEBOOK_NAME_GENDER, student.gender)}
+              </td>
             </tr>
             <tr>
               <th>House</th>
-              <td>{student.house}</td>
+              <td>{getCodebookItemName(CODEBOOK_NAME_HOUSE, student.house)}</td>
             </tr>
             <tr>
               <th>Year</th>
-              <td>{student.year}</td>
+              <td>{getCodebookItemName(CODEBOOK_NAME_YEAR, student.year)}</td>
             </tr>
           </tbody>
         </table>
       ) : null}
-      <div style={{ display: "flex", gap: 20 }}>
-        <nav>
-          <Link to="/">Back to student list</Link>
-          {student !== null ? (
-            <Link to={`/students/${id}/edit`}>
-              Edit {student.firstName} {student.lastName}
-            </Link>
-          ) : null}
-        </nav>
-      </div>
+      <nav>
+        <Link to="/">Back to student list</Link>{" "}
+        {student !== null ? (
+          <Link to={`/students/${student.id}/edit`}>
+            Edit {student.firstName} {student.lastName}
+          </Link>
+        ) : null}
+      </nav>
     </>
   );
 };
