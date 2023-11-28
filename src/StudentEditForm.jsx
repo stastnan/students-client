@@ -7,20 +7,15 @@ import {
   getCodebookOptions,
   getCodebookRadioButtons,
 } from "./codebook";
+import { fetchStudent } from "./fetchStudent";
 
 export const StudentEditForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [student, setStudent] = useState(null);
 
-  const fetchStudent = () => {
-    return fetch(`http://localhost:8080/students/${id}`)
-      .then((response) => response.json())
-      .then((body) => setStudent(body));
-  };
-
   useEffect(() => {
-    fetchStudent();
+    fetchStudent(id, setStudent);
   }, []);
 
   const setFirstName = (firstName) => {

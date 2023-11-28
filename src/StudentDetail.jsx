@@ -6,19 +6,14 @@ import {
   CODEBOOK_NAME_YEAR,
   getCodebookItemName,
 } from "./codebook";
+import { fetchStudent } from "./fetchStudent";
 
 export const StudentDetail = () => {
   const { id } = useParams();
   const [student, setStudent] = useState(null);
 
-  const fetchStudent = () => {
-    return fetch(`http://localhost:8080/students/${id}`)
-      .then((response) => response.json())
-      .then((body) => setStudent(body));
-  };
-
   useEffect(() => {
-    fetchStudent();
+    fetchStudent(id, setStudent);
   }, []);
 
   return (
